@@ -171,12 +171,17 @@ function ItemDAO(database) {
             date: Date.now()
         }
 
-        this.db.collection("item")
-          .updateOne({_id: itemId}, {$push: {reviews: reviewDoc}})
-          .then((doc) => {
-            callback(doc);
-          })
-          .catch(err => console.log(err));
+        this.db.collection("item").findOneAndUpdate(
+            {_id: itemId},
+            {"$push": {reviews: reviewDoc}},
+            {
+                upsert: false,
+                returnOriginal: false
+            })
+            .then((result) => {
+              callback(result.value);
+            })
+            .catch(err => console.log(err));
     }
 
 
