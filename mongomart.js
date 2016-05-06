@@ -172,10 +172,10 @@ MongoClient.connect('mongodb://localhost:27017/mongomart', function(err, db) {
     router.post("/item/:itemId/reviews", function(req, res) {
         "use strict";
 
-        var itemId = parseInt(req.params.itemId);
+        var itemId = parseInt(req.params.itemId, 10);
         var review = req.body.review;
         var name = req.body.name;
-        var stars = parseInt(req.body.stars);
+        var stars = parseInt(req.body.stars, 10);
 
         items.addReview(itemId, review, name, stars, function(itemDoc) {
             res.redirect("/item/" + itemId);
