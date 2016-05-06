@@ -39,6 +39,23 @@ function CartDAO(database) {
     this.itemInCart = function(userId, itemId, callback) {
         "use strict";
 
+        this.db.collection("cart").aggregate([
+          { $match: {userId: userId}},
+          { $unwind: "$items"},
+          { $match: {"items._id": itemId} },
+        ]).toArray((err, docs) => {
+          if (err) console.error(err);
+
+          if (docs.length > 1) {
+            console.error(`itemInCart should return one item, now ${docs.length} items`, docs.items);
+          } else if (docs.length === 1) {
+            callback(docs[0].items);
+          } else {
+            callback(null);
+          }
+
+        })
+
         /*
          *
          * TODO-lab6
@@ -64,7 +81,7 @@ function CartDAO(database) {
          *
          */
 
-        callback(null);
+        // callback(null);
 
         // TODO-lab6 Replace all code above (in this method).
     }
